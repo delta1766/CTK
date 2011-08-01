@@ -23,6 +23,7 @@
 #-----------------------------------------------------------------------------
 SET(external_projects
   CTKData
+  AStyle
   Log4Qt
   KWStyle
   VTK
