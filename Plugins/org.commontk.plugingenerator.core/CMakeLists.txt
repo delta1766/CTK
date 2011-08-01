@@ -5,6 +5,8 @@ SET(PLUGIN_export_directive "org_commontk_plugingenerator_core_EXPORT")
 SET(PLUGIN_SRCS
   ctkPluginGeneratorAbstractExtension.cpp
   ctkPluginGeneratorAbstractTemplate.cpp
+  ctkPluginGeneratorAStyleInterface.cpp
+  ctkPluginGeneratorAStyleOptions.cpp
   ctkPluginGeneratorConstants.cpp
   ctkPluginGeneratorCorePlugin.cpp
   ctkPluginGeneratorCMakeLists.cpp

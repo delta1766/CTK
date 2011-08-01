@@ -59,6 +59,9 @@ public:
   void setLicense(const QString& license);
   QString getLicense() const;
 
+  ctkPluginGeneratorAStyleOptions getAStyleOptions() const;
+  void setAStyleOptions(const ctkPluginGeneratorAStyleOptions& options);
+
   void create(const QString& location);
 
   void reset();

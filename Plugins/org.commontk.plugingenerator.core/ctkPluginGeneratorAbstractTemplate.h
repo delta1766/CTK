@@ -29,6 +29,8 @@
 
 #include <org_commontk_plugingenerator_core_Export.h>
 
+#include "ctkPluginGeneratorAStyleOptions.h"
+
 class ctkPluginGeneratorCodeModel;
 class ctkPluginGeneratorAbstractTemplatePrivate;
 
@@ -64,6 +66,8 @@ public:
   virtual QString generateContent() = 0;
 
 protected:
+
+  virtual ctkPluginGeneratorAStyleOptions getAStyleOptions() const;
 
   QString getSymbolicName(bool withPeriods = false) const;
 

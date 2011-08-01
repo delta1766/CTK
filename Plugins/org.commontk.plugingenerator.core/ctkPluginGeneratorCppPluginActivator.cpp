@@ -66,7 +66,7 @@ QString ctkPluginGeneratorCppPluginActivator::generateContent()
       int i = 1;
       foreach(QString bodyToken, constructorBody)
       {
-        constructor << "  " << bodyToken.replace("\n", "\n  ") << "\n";
+        constructor << bodyToken << "\n";
         if (i < constructorBody.size()) constructor << "\n";
         ++i;
       }
@@ -91,7 +91,7 @@ QString ctkPluginGeneratorCppPluginActivator::generateContent()
       }
       else
       {
-        destructor << "  " << bodyToken.replace("\n", "\n  ") << "\n";
+        destructor << bodyToken << "\n";
         if (i < destructorBody.size()) destructor << "\n";
       }
       ++i;
@@ -111,14 +111,14 @@ QString ctkPluginGeneratorCppPluginActivator::generateContent()
     int i = 1;
     foreach(QString block, startContent)
     {
-      startMethod << "  " << block.replace("\n", "\n  ") << "\n";
+      startMethod << block << "\n";
       if (i < startContent.size()) startMethod << "\n";
       ++i;
     }
   }
   else
   {
-    startMethod << "  Q_UNUSED(context)\n";
+    startMethod << "Q_UNUSED(context)\n";
   }
 
   startMethod << "}";
@@ -136,14 +136,14 @@ QString ctkPluginGeneratorCppPluginActivator::generateContent()
     int i = 1;
     foreach(QString block, stopContent)
     {
-      stopMethod << "  " << block.replace("\n", "\n  ") << "\n";
+      stopMethod << block << "\n";
       if (i < stopContent.size()) stopMethod << "\n";
     }
     ++i;
   }
   else
   {
-    stopMethod << "  Q_UNUSED(context)\n";
+    stopMethod << "Q_UNUSED(context)\n";
   }
 
   stopMethod << "}";

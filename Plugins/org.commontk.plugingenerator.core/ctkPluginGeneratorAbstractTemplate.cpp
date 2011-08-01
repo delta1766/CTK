@@ -24,6 +24,7 @@
 
 #include "ctkPluginGeneratorCodeModel.h"
 #include "ctkPluginGeneratorConstants.h"
+#include "ctkPluginGeneratorAStyleInterface.h"
 
 #include <QHash>
 #include <QFile>
@@ -132,15 +133,22 @@ void ctkPluginGeneratorAbstractTemplate::create(const QString& location)
   QString filename = getFilename();
 
   const QString path = location + "/" + filename;
+  const QString formattedContent = ctkPluginGeneratorAStyleInterface::formatSource(this->generateContent(), getAStyleOptions());
   QFile file(path);
   file.open(QIODevice::WriteOnly | QIODevice::Text);
-  file.write(this->generateContent().toAscii());
+  file.write(formattedContent.toAscii());
   file.close();
 }
 
 QStringList ctkPluginGeneratorAbstractTemplate::getMarkers() const
 {
   return ctkPluginGeneratorConstants::getGlobalMarkers();
+}
+
+ctkPluginGeneratorAStyleOptions ctkPluginGeneratorAbstractTemplate::getAStyleOptions() const
+{
+  Q_D(const ctkPluginGeneratorAbstractTemplate);
+  return d->codeModel->getAStyleOptions();
 }
 
 QString ctkPluginGeneratorAbstractTemplate::getSymbolicName(bool withPeriods) const

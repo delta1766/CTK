@@ -5,5 +5,6 @@
 # 
 
 SET(target_libraries
+  AStyle_LIBRARIES
   CTKPluginFramework
   )

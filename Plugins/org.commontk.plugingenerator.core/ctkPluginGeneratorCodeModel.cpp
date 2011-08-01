@@ -40,6 +40,8 @@ public:
   QString exportMacro;
   QString exportMacroInclude;
   QString license;
+
+  ctkPluginGeneratorAStyleOptions astyleOptions;
 };
 
 class ctkPluginGeneratorFolderTemplate : public ctkPluginGeneratorAbstractTemplate
@@ -259,6 +261,18 @@ ctkPluginGeneratorAbstractTemplate* ctkPluginGeneratorCodeModel::getTemplate(con
   }
 
   return 0;
+}
+
+ctkPluginGeneratorAStyleOptions ctkPluginGeneratorCodeModel::getAStyleOptions() const
+{
+  Q_D(const ctkPluginGeneratorCodeModel);
+  return d->astyleOptions;
+}
+
+void ctkPluginGeneratorCodeModel::setAStyleOptions(const ctkPluginGeneratorAStyleOptions& options)
+{
+  Q_D(ctkPluginGeneratorCodeModel);
+  d->astyleOptions = options;
 }
 
 void ctkPluginGeneratorCodeModel::create(const QString& location)
