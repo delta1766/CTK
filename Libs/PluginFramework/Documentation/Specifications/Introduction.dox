@@ -1,0 +1,31 @@
+/*!
+
+\page pfw_intro Introduction
+
+The CTK Service Platform delivers a dynamic module system for C++, inspired by OSGi. It enables
+developers to design, develop, and deploy modular applications or frameworks, based on
+an extensible and service-oriented architecture.
+
+This is an early draft of the CTK Service Platform specification.
+
+\section pfw_intro_overview CTK Plugin Framework Overview
+
+The CTK Plugin Framework forms the core of the CTK Service Platform specifications.
+It provides a general-purpose framework for the deployment of extensible components,
+called \e plug-ins. Installed plug-ins, their dependencies, and services are managed by the
+framework in a scalable fashion.
+
+The functionality of the Framework is divided in the following layers:
+
+\li \ref pfw_modulelayer
+\li Life Cycle Layer
+\li Service Layer
+\li Actual Services
+
+This layering is depicted in Figure 1.1.
+
+The \ref pfw_modulelayer defines a modularization model for C++ based on dynamic shared
+objects (DSOs) (this term will be used for all supported platforms, so e.g. on Windows,
+it is equivalent to a DLL - a dynamic link library).
+
+*/
