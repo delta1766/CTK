@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+  
+  <OCD description="FileInstaller" 
+       name="org.commontk.fileinstall"
+       id="org.commontk.fileinstall">
+       
+    <AD name="Poll directory"  id="org.commontk.fileinstall.Dir" required="true" type="String" default="load"/>   
+    <AD name="Poll interval"  id="org.commontk.fileinstall.Poll" required="false" type="String" default="2000"/>
+    <AD name="Log level"  id="org.commontk.fileinstall.LogLevel" required="false" type="String" default="0"/>
+    <AD name="Start new plug-ins?"  id="org.commontk.fileinstall.plugins.NewStart" required="false" type="String" default="true"/>
+    <AD name="File name filter"  id="org.commontk.fileinstall.Filter" required="false" type="String" default=""/>
+    <AD name="No initial delay"  id="org.commontk.fileinstall.NoInitialDelay" required="false" type="String" default="false"/>
+    <AD name="Start plug-ins transiently"  id="org.commontk.fileinstall.plugins.StartTransient" required="false" type="String" default="false"/>
+    <AD name="Use the plug-in activation policy when starting" id="org.commontk.fileinstall.plugins.StartActivationPolicy" required="false" type="String" default="true"/>
+    <!--
+    <AD name="Plugins start level"  id="felix.fileinstall.start.level" required="false"
+     type="String" default="0"/>
+    -->
+  </OCD>
+  
+    <Designate pid="org.commontk.fileinstall">
+        <Object ocdref="org.commontk.fileinstall"/>
+    </Designate>
+  
+</metatype:MetaData>

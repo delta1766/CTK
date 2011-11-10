@@ -1,0 +1,5 @@
+set(Plugin-Name "CommonTK File Install")
+set(Plugin-Version "1.0.0")
+set(Plugin-Description "A utility to automatically install plug-ins from a directory.")
+set(Plugin-Vendor "CommonTK")
+set(Plugin-ContactAddress "http://www.commontk.org")

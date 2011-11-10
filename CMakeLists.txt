@@ -379,6 +379,7 @@ SET(CTK_PLUGINS
   org.commontk.dah.examplehost:OFF
 
   # Misc
+  org.commontk.fileinstall:OFF
   org.commontk.plugingenerator.core:OFF
   org.commontk.plugingenerator.ui:OFF
   org.commontk.qtmobility.service:OFF
