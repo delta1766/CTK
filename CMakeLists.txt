@@ -443,6 +443,9 @@ ctk_lib_option(DICOM/Widgets
 ctk_lib_option(ImageProcessing/ITK/Core
                "Build the ITK Core library" OFF)
                
+ctk_lib_option(ModuleDescription
+               "Build the Module Description library" OFF)
+               
 ctk_lib_option(Scripting/Python/Core
                "Build the Python Core library" OFF)
                
