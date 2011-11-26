@@ -50,45 +50,48 @@
 * file (shared object or executable) for a second version of the
 * module (usually a different type from the primary).
 */
-class CTK_MODULDESC_EXPORT ctkModuleDescription
+class CTK_MODULDESC_EXPORT ctkModuleDescription : public QHash<QString, QString>
 {
 public:
-
   // Optional icon associated to the module
-  virtual QIcon icon() const;
+  void setIcon(const QIcon& logo);
+  const QIcon& icon() const;
+  
+  void addParameterGroup(ctkModuleParameterGroup* group);
 
-  virtual QList<ctkModuleParameterGroup> parameterGroups() const;
+  const QVector<ctkModuleParameterGroup*>& parameterGroups() const;
   
   // Return the group that contain the parameter associated to the name
-  virtual ctkModuleParameterGroup* parameterGroup(const QString& parameterName) const;
-
+  ctkModuleParameterGroup* parameterGroup(const QString& parameterName) const;
   // Return the first parameter corresponding to the name from any group
-  virtual ctkModuleParameter* parameter(const QString& parameterName) const;
+  ctkModuleParameter* parameter(const QString& parameterName) const;
   
   // Does the module have any simple (primitive) return types?
-  virtual bool hasReturnParameters() const;
+  bool hasReturnParameters() const;
+
+  /// TODO: move to ctkModuleParameter
+  bool setParameterDefaultValue(const QString& parameterName,
+                                const QString& value);
 
   ///
   /// Read a parameter file. Syntax of file is "name: value" for each
   /// parameter. Returns a bool indicating whether any parameter value
   /// was modified.
-  virtual bool readParameterFile(const QString& filename);
+  bool readParameterFile(const QString& filename);
 
   ///
   /// Write a parameter file. By default, the method writes out all
   /// the parameters.  The "withHandlesToBulkParameters" parameter
   /// controls whether the handles to the bulk parameters (image,
   /// geometry, etc.) are written to the file.
-  virtual bool writeParameterFile(const QString& filename, bool withHandlesToBulkParameters = true)const;
+  bool writeParameterFile(const QString& filename, bool withHandlesToBulkParameters = true)const;
 
 private:
-
   friend CTK_MODULDESC_EXPORT QTextStream & operator<<(QTextStream &os, const ctkModuleDescription &module);
-
   /// Groups of parameters
-  QList<ctkModuleParameterGroup*> parameterGroups;
+  QVector<ctkModuleParameterGroup*> ParameterGroups;
   /// Icon of the module
-  QIcon icon;
+  QIcon Icon;
 };
 
 CTK_MODULDESC_EXPORT QTextStream & operator<<(QTextStream &os, const ctkModuleDescription &module);

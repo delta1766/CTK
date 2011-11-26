@@ -47,6 +47,9 @@ public:
 
   /// Is an index type?
   bool isIndexParameter() const;
+
+  /// Sets the default value
+  void setDefaultValue(const QString& value);
 };
 
 CTK_MODULDESC_EXPORT QTextStream & operator<<(QTextStream &os, const ctkModuleParameter &parameter);

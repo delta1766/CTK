@@ -14,6 +14,8 @@ set(KIT_export_directive "CTK_MODULDESC_EXPORT")
 
 # Source files
 set(KIT_SRCS
+  ctkDefaultModuleDescriptionReader.h
+  ctkDefaultModuleDescriptionReader.cpp
   ctkModuleDescription.h
   ctkModuleDescription.cpp
   ctkModuleParameter.h
@@ -24,10 +26,7 @@ set(KIT_SRCS
   ctkModuleParameterGroupValue.cpp
   ctkModuleParameterValue.h
   ctkModuleParameterValue.cpp
-  ctkModuleDescriptionReaderInterface.cpp
   ctkModuleDescriptionReaderInterface.h
-  ctkModuleDescriptionReader.h
-  ctkModuleDescriptionReader.cpp
   ctkModuleDescriptionConverterInterface.h
   ctkModuleDescriptionConverter.h
   ctkModuleDescriptionConverter.cpp
@@ -40,8 +39,6 @@ set(KIT_SRCS
 
 # Headers that should run through moc
 set(KIT_MOC_SRCS
-  ctkModuleDescriptionReaderInterface.h
-  ctkModuleDescriptionReader.h
   ctkModuleDescriptionConverterInterface.h
   ctkModuleDescriptionConverter.h
   ctkModuleDescriptionExecutionInterface.h

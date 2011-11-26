@@ -42,6 +42,12 @@ bool ctkModuleParameter::isIndexParameter() const
   return ((*this)[ "Index" ] != "");
 }
 
+//----------------------------------------------------------------------------
+void ctkModuleParameter::setDefaultValue(const QString& value)
+{
+  this->operator []("Default") = value;
+}
+
 //-----------------------------------------------------------------------------
 QTextStream & operator<<(QTextStream &os, const ctkModuleParameter &parameter)
 { 

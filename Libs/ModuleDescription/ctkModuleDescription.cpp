@@ -27,13 +27,13 @@ limitations under the License.
 void ctkModuleDescription::addParameterGroup( ctkModuleParameterGroup* group )
 {
   Q_ASSERT(group);
-	this->ParameterGroups.push_back(group);
+  this->ParameterGroups.push_back(group);
 }
 
 //----------------------------------------------------------------------------
 const QVector<ctkModuleParameterGroup*>& ctkModuleDescription::parameterGroups() const
 {
-	return this->ParameterGroups;
+  return this->ParameterGroups;
 }
 
 //----------------------------------------------------------------------------
@@ -46,19 +46,6 @@ bool ctkModuleDescription::hasReturnParameters() const
       {
       return true;
       }
-    }
-
-  return false;
-}
-
-//----------------------------------------------------------------------------
-bool ctkModuleDescription::setParameterDefaultValue(const QString& name, const QString& value)
-{
-  ctkModuleParameter* param = this->parameter( name );
-  if ( param )
-    {
-    (*param)[ "Default" ] = value;
-    return true;
     }
 
   return false;
