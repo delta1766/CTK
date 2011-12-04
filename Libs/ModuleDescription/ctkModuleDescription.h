@@ -21,13 +21,11 @@
 #ifndef __ctkModuleDescription_h
 #define __ctkModuleDescription_h
 
-// Qt includes
-#include <QHash>
 #include <QIcon>
-#include <QVector>
 
-// Module parameter
 #include "ctkModuleParameterGroup.h"
+
+struct ctkModuleDescriptionPrivate;
 
 /**
 * Description of the parameters of a module
@@ -38,59 +36,96 @@
 * For example:
 * - Target: This is the entry point for a shared object module and the full 
 * command (with path) for an executable.
-* - Type: Unknown, SharedObjectModule, CommandLineModule
-* - AlternativeTarget: This is the entry
-* point for a shared object module and the full command (with path)
-* for an executable. The alternative target is used for a second version
-* of a module (whose type differs from the primary target,
-* executable verses shared object).
-* - Location: This is path to the file (shared
-* object or executable) for the module
-* - AlternativeLocation: This is path to the
-* file (shared object or executable) for a second version of the
-* module (usually a different type from the primary).
+* - Location: This is path to the executable for the module
 */
 class CTK_MODULDESC_EXPORT ctkModuleDescription
 {
+  Q_DECLARE_PRIVATE(ctkModuleDescription)
+
 public:
 
-  // Optional icon associated to the module
-  virtual QIcon icon() const;
+  ~ctkModuleDescription();
 
-  virtual QList<ctkModuleParameterGroup> parameterGroups() const;
-  
-  // Return the group that contain the parameter associated to the name
-  virtual ctkModuleParameterGroup* parameterGroup(const QString& parameterName) const;
+  static ctkModuleDescription* parse(QIODevice* input);
 
-  // Return the first parameter corresponding to the name from any group
-  virtual ctkModuleParameter* parameter(const QString& parameterName) const;
-  
+  void setCategory(const QString& cat);
+  QString category() const;
+
+  void setIndex(const QString& ind);
+  QString index() const;
+
+  void setTitle(const QString& title);
+  QString title() const;
+
+  void setDescription(const QString& description);
+  QString description() const;
+
+  void setVersion(const QString& version);
+  QString version() const;
+
+  void setDocumentationURL(const QString& documentationURL);
+  QString documentationURL() const;
+
+  void setLicense(const QString& license);
+  QString license() const;
+
+  void setAcknowledgements(const QString& acknowledgements);
+  QString acknowledgements() const;
+
+  void setContributor(const QString& contributor);
+  QString contributor() const;
+
+  /// Set the location for the module.  This is path to the file for the module.
+  void setLocation(const QString& target);
+  /// Get the location for the module.  This is path to the file for the module.
+  QString location() const;
+
+  void setLogo(const QIcon& logo);
+  QIcon logo() const;
+
+  void addParameterGroup(ctkModuleParameterGroup* group);
+  QList<ctkModuleParameterGroup*> parameterGroups() const;
+  void setParameterGroups(const QList<ctkModuleParameterGroup*>& groups);
+
+  bool hasParameter(const QString& name) const;
+
+  ctkModuleParameter* parameter(const QString& name) const;
+
   // Does the module have any simple (primitive) return types?
-  virtual bool hasReturnParameters() const;
+  bool hasReturnParameters() const;
+
+  bool setParameterDefaultValue(const QString& name,
+                                const QString& value);
+
+//  const ModuleProcessInformation* processInformation() const
+//  {return &ProcessInformation;}
+
+//  ModuleProcessInformation* processInformation()
+//  {return &ProcessInformation;}
 
   ///
   /// Read a parameter file. Syntax of file is "name: value" for each
   /// parameter. Returns a bool indicating whether any parameter value
   /// was modified.
-  virtual bool readParameterFile(const QString& filename);
+  bool readParameterFile(const QString& filename);
 
   ///
   /// Write a parameter file. By default, the method writes out all
   /// the parameters.  The "withHandlesToBulkParameters" parameter
   /// controls whether the handles to the bulk parameters (image,
   /// geometry, etc.) are written to the file.
-  virtual bool writeParameterFile(const QString& filename, bool withHandlesToBulkParameters = true)const;
+  bool writeParameterFile(const QString& filename, bool withHandlesToBulkParameters = true) const;
 
 private:
 
-  friend CTK_MODULDESC_EXPORT QTextStream & operator<<(QTextStream &os, const ctkModuleDescription &module);
+  ctkModuleDescription();
 
-  /// Groups of parameters
-  QList<ctkModuleParameterGroup*> parameterGroups;
-  /// Icon of the module
-  QIcon icon;
+  Q_DISABLE_COPY(ctkModuleDescription)
+
+  ctkModuleDescriptionPrivate * const d_ptr;
+
 };
 
-CTK_MODULDESC_EXPORT QTextStream & operator<<(QTextStream &os, const ctkModuleDescription &module);
+CTK_MODULDESC_EXPORT QTextStream & operator<<(QTextStream& os, const ctkModuleDescription& module);
 
 #endif

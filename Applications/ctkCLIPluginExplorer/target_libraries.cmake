@@ -5,5 +5,5 @@
 # 
 
 set(target_libraries
-  ModuleDescription
+  CTKModuleDescription
   )

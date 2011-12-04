@@ -2,8 +2,7 @@
 
   Library: CTK
 
-  Copyright (c) German Cancer Research Center,
-    Division of Medical and Biological Informatics
+  Copyright (c) 2010 Brigham and Women's Hospital (BWH) All Rights Reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,24 +18,37 @@
 
 =============================================================================*/
 
+#ifndef __ctkSlicerModuleReader_h
+#define __ctkSlicerModuleReader_h
+
 // Qt includes
-#include <QCoreApplication>
-#include <QDebug>
-#include <QFile>
+#include <QRegExp>
+#include <QStack>
+#include <QXmlAttributes>
+#include <QXmlDefaultHandler>
 
 // CTK includes
-#include <ctkModuleDescription.h>
+#include <ctkModuleDescriptionExport.h>
 
-int main(int argc, char** argv)
+/**
+ * Reader of default module XML description
+ * Freely inspired from 
+ * Slicer/Libs/SlicerExecutionModel/ModuleDescriptionParser/ModuleDescriptionParser.cxx
+ */
+class CTK_MODULDESC_EXPORT ctkModuleDescriptionParser
 {
-  QCoreApplication app(argc, argv);
 
-  QIODevice* input = new QFile("/home/sascha/tmp/slicer_md1.xml");
+public:
 
-  ctkModuleDescription* descr = ctkModuleDescription::parse(input);
+  void setInput(QIODevice* input);
 
-  QTextStream cout(stdout, QIODevice::WriteOnly);
-  cout << *descr;
+  void parseDescription();
 
-  return 0;
-}
+  ctkModuleDescription* moduleDescription() const;
+
+protected:
+
+  virtual bool validate() const;
+};
+
+#endif
