@@ -30,9 +30,8 @@
 #include <QtUiTools/QUiLoader>
 
 // CTK includes
-#include <ctkModuleDescriptionValidator.h>
-#include <ctkModuleDescription.h>
 #include <ctkCommandLineParser.h>
+#include <ctkModuleDescriptionValidator.h>
 
 #include "ctkCLIPluginExplorerMainWindow.h"
 
@@ -44,6 +43,7 @@ int main(int argc, char** argv)
   cmdLineParser.setArgumentPrefix("--", "-");
   cmdLineParser.setStrictModeEnabled(true);
 
+  cmdLineParser.addArgument("cli", "", QVariant::String, "Path to a CLI module (executable)");
   cmdLineParser.addArgument("cli-xml", "", QVariant::String, "Path to a CLI XML description.");
 
   cmdLineParser.addArgument("validate-plugin", "", QVariant::String, "Path to a CLI plug-in");
@@ -103,7 +103,20 @@ int main(int argc, char** argv)
 
   if (args.contains("cli-xml"))
   {
-    mainWindow.showGui(args["cli-xml"].toString());
+    QFile input(args["cli-xml"].toString());
+    if (!input.exists())
+    {
+      qCritical() << "XML description does not exist:" << input.fileName();
+      return EXIT_FAILURE;
+    }
+    input.open(QIODevice::ReadOnly);
+    QByteArray xml = input.readAll();
+
+    mainWindow.testModuleXML(xml);
+  }
+  else if (args.contains("cli"))
+  {
+    mainWindow.addModule(args["cli"].toString());
   }
 
   mainWindow.show();

@@ -24,6 +24,10 @@
 
 #include <QMainWindow>
 
+#include <ctkModuleManager.h>
+
+class ctkModuleDescriptionDefaultFactory;
+
 namespace Ui {
 class ctkCLIPluginExplorerMainWindow;
 }
@@ -36,14 +40,30 @@ public:
   explicit ctkCLIPluginExplorerMainWindow(QWidget *parent = 0);
   ~ctkCLIPluginExplorerMainWindow();
 
-  void showGui(const QString& xmlFile);
+  void addModule(const QString& location);
+  void testModuleXML(const QByteArray& xml);
 
 protected Q_SLOTS:
 
   void on_actionRun_triggered();
+
+  void futureFinished();
+
+protected:
+
+  void addModuleTab(const ctkModuleReference& moduleRef);
+
+  ctkModuleReference moduleReference(int tabIndex);
   
 private:
   Ui::ctkCLIPluginExplorerMainWindow *ui;
+
+  ctkModuleDescriptionDefaultFactory* factory;
+  ctkModuleManager moduleManager;
+
+  QHash<int, ctkModuleReference> mapTabToModuleRef;
+
+  ctkModuleProcessFutureWatcher futureWatcher;
 };
 
 #endif // CTKCLIPLUGINEXPLORERMAINWINDOW_H
