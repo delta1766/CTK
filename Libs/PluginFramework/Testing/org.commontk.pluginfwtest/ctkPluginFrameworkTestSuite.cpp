@@ -455,6 +455,213 @@ void ctkPluginFrameworkTestSuite::frame045a()
 }
 
 //----------------------------------------------------------------------------
+// Reinstalls and the updates testbundle_A.",
+//"The version is checked to see if an update has been made."
+  class Frame070a extends FWTestCase {
+    public void runTest() throws Throwable {
+      out.println("### framework test bundle :FRAME070A start");
+      boolean teststatus = true;
+      boolean catchstatus = true;
+      String jarA = "bundleA_test-1.0.0.jar";
+      String jarA1 = "bundleA1_test-1.0.1.jar";
+      InputStream fis;
+      String versionA;
+      String versionA1;
+
+      buA = null;
+
+      try {
+        buA = Util.installBundle(bc, jarA);
+        teststatus = true;
+      }
+      catch (BundleException bexcA) {
+        fail("framework test bundle "+ bexcA +" :FRAME070A:FAIL");
+        teststatus = false;
+      }
+      catch (SecurityException secA) {
+        fail("framework test bundle "+ secA +" :FRAME070A:FAIL");
+        teststatus = false;
+      }
+
+      Dictionary ai = buA.getHeaders();
+
+      if(false) {
+        // debugging
+        for (Enumeration e = ai.keys(); e.hasMoreElements();) {
+          Object key = e.nextElement();
+          Object value = ai.get(key);
+          String s =  key.toString();
+          String v =  value.toString();
+          out.println("A: Manifest info: " + s + ", " + v);
+        }
+      }
+
+      versionA = (String) ai.get("Bundle-Version");
+
+      clearEvents();
+      out.println("Before version = " + versionA);
+
+      try {
+        URL urk = bc.getBundle().getResource(jarA1);
+        out.println("update from " + urk);
+        // URLConnection url1 = URLConnection (urk);
+        fis = urk.openStream();
+        if(fis == null) {
+          fail("No data at " + urk + ":FRAME070A:FAIL");
+        }
+
+
+        try {
+
+      //                TODO rework, does not always work
+
+          long lastModified = buA.getLastModified();
+
+          buA.update(fis);
+          /*
+          if(buA.getLastModified() <= lastModified){
+                  fail("framework test bundle, update does not change lastModified value :FRAME070A:FAIL");
+          }*/
+        }
+        catch (BundleException be ) {
+          teststatus = false;
+          fail("framework test bundle, update without new bundle source :FRAME070A:FAIL");
+        }
+      }
+      catch (MalformedURLException murk) {
+        teststatus = false;
+        fail("framework test bundle, update file not found " + murk+ " :FRAME070A:FAIL");
+      }
+      catch (FileNotFoundException fnf) {
+        teststatus = false;
+        fail("framework test bundle, update file not found " + fnf+ " :FRAME070A:FAIL");
+      }
+      catch (IOException ioe) {
+        teststatus = false;
+        fail("framework test bundle, update file not found " + ioe+ " :FRAME070A:FAIL");
+      }
+
+      Dictionary a1i = buA.getHeaders();
+
+      if(false) {
+        // debugging
+        for (Enumeration e = a1i.keys(); e.hasMoreElements();) {
+          Object key = e.nextElement();
+          Object value = a1i.get(key);
+          String s =  key.toString();
+          String v =  value.toString();
+          out.println("A1: Manifest info: " + s + ", " + v);
+        }
+      }
+
+      a1i = buA.getHeaders();
+      versionA1 = (String) a1i.get("Bundle-Version");
+
+      out.println("After  version = " + versionA1);
+
+      // check the events, none should have happened
+      boolean lStat
+        = checkListenerEvents(out, false, 0, true, BundleEvent.UPDATED,
+                              false, 0, buA, null);
+
+      if (versionA1.equals(versionA)) {
+        teststatus = false;
+        fail("framework test bundle, update of bundle failed, version info unchanged :FRAME070A:Fail");
+      }
+
+
+      if (teststatus == true ) {
+        out.println("### framework test bundle :FRAME070A:PASS");
+      }
+      else {
+        fail("### framework test bundle :FRAME070A:FAIL");
+      }
+    }
+  }
+
+  // 15. Uninstall a the testbundle B and then try to start and stop it
+  // In both cases exceptions should be thrown.
+
+  public final static String [] HELP_FRAME075A =  {
+    "Uninstall bundleB_test and the try to start and stop it.",
+    "In both cases exceptions should be thrown."
+  };
+
+  class Frame075a extends FWTestCase {
+    public void runTest() throws Throwable {
+      out.println("### framework test bundle :FRAME075A start");
+      boolean teststatus = true;
+      boolean exep1 = false;
+      boolean exep2 = false;
+
+      try {
+        buB.uninstall();
+      }
+      catch (BundleException be) {
+        teststatus = false;
+        fail("framework test bundle, uninstall of bundleB failed:" + be +" :FRAME075A:FAIL");
+      }
+
+      catch (Exception e) {
+        fail("framework test bundle, got unexpected exception " + e + " :FRAME075A:FAIL");
+        e.printStackTrace();
+      }
+
+      try {
+        buB.start();
+      }
+      catch (BundleException be) {
+        teststatus =  false;
+        fail("framework test bundle, got unexpected exception " + be + "at start :FRAME075A:FAIL");
+      }
+      catch (IllegalStateException ise) {
+        exep1 = true;
+        // out.println("Got expected exception" + ise);
+      }
+      catch (SecurityException sec) {
+        teststatus = false;
+        fail("framework test bundle, got unexpected exception " + sec + " :FRAME075A:FAIL");
+      }
+
+      catch (Exception e) {
+        fail("framework test bundle, got unexpected exception " + e + " :FRAME075A:FAIL");
+        e.printStackTrace();
+      }
+
+      try {
+        buB.stop();
+      }
+      catch (BundleException be) {
+        teststatus =  false;
+        fail("framework test bundle, got unexpected exception " + be + "at stop :FRAME075A:FAIL");
+      }
+      catch (IllegalStateException ise) {
+        exep2 = true;
+        // out.println("Got expected exception" + ise);
+      }
+      catch (SecurityException sec) {
+        teststatus = false;
+        fail("framework test bundle, got unexpected exception " + sec + " :FRAME075A:FAIL");
+      }
+
+      catch (Exception e) {
+        fail("framework test bundle, got unexpected exception " + e + " :FRAME075A:FAIL");
+        e.printStackTrace();
+      }
+
+      // System.err.println("teststatus=" + teststatus + " exep1= " + exep1 + " exep2= " + exep2);
+      teststatus = teststatus && exep1 && exep2;
+
+      if (teststatus == true ) {
+        out.println("### framework test bundle :FRAME075A:PASS");
+      }
+      else {
+        fail("### framework test bundle :FRAME075A:FAIL");
+      }
+    }
+  }
+
+//----------------------------------------------------------------------------
 void ctkPluginFrameworkTestSuite::frameworkListener(const ctkPluginFrameworkEvent& fwEvent)
 {
   frameworkEvents.push_back(fwEvent);
