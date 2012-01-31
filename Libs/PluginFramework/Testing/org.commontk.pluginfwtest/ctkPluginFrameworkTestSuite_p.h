@@ -66,6 +66,7 @@ private Q_SLOTS:
   void frame040a();
   void frame042a();
   void frame045a();
+  void frame070a();
 
 private:
 

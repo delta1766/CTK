@@ -96,7 +96,7 @@ public:
    * @param localPath Path to a plugin on the local file system.
    * @return Plugin archive object.
    */
-  ctkPluginArchive* updatePluginArchive(ctkPluginArchive* old, const QString& localPath);
+  ctkPluginArchive* updatePluginArchive(ctkPluginArchive* old, const QUrl &updateLocation, const QString &localPath);
 
 
   /**
@@ -164,6 +164,14 @@ public:
    * Close this plugin storage and all bundles in it.
    */
   void close();
+
+  /**
+   * Find posisition for BundleArchive with specified id
+   *
+   * @param id Bundle archive id to find.
+   * @return String to write
+   */
+  int find(long id) const;
 
   ~ctkPluginStorage();
 

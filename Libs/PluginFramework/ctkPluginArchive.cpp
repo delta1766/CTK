@@ -41,11 +41,25 @@ ctkPluginArchive::ctkPluginArchive(ctkPluginStorage* pluginStorage,
     lastModified(lastModified), location(pluginLocation),
     localPluginPath(localPluginPath), storage(pluginStorage)
 {
+  readManifest();
+}
+
+//----------------------------------------------------------------------------
+ctkPluginArchive::ctkPluginArchive(ctkPluginArchive* old, const QUrl& pluginLocation, const QString& localPluginPath)
+  : autostartSetting(old->autostartSetting), id(old->id), startLevel(-1),
+    location(pluginLocation), localPluginPath(localPluginPath), storage(old->storage)
+{
+  readManifest();
+}
+
+void ctkPluginArchive::readManifest()
+{
   QByteArray manifestResource = this->getPluginResource("META-INF/MANIFEST.MF");
   if (manifestResource.isEmpty())
   {
-    throw ctkPluginException(QString("ctkPlugin has no MANIFEST.MF resource, location=") + pluginLocation.toString());
+    throw ctkPluginException(QString("ctkPlugin has no MANIFEST.MF resource, location=") + localPluginPath);
   }
+
   manifest.read(manifestResource);
 }
 

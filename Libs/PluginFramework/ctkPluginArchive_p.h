@@ -87,6 +87,17 @@ public:
                    int autostartSetting = -1);
 
   /**
+   * Construct new bundle archive in an existing bundle archive.
+   *
+   */
+  ctkPluginArchive(ctkPluginArchive* old, const QUrl& pluginLocation, const QString& localPluginPath);
+
+  /**
+   * Crreate a ctkPluginManifest using the Qt resource under META-INF/MANIFEST.MF
+   */
+  void readManifest();
+
+  /**
    * Get an attribute from the manifest of a plugin.
    *
    * Not localized

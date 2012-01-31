@@ -31,6 +31,7 @@
 #include "ctkUtils.h"
 
 #include <QStringList>
+#include <QIODevice>
 
 //----------------------------------------------------------------------------
 ctkPlugin::ctkPlugin()
@@ -166,6 +167,37 @@ void ctkPlugin::stop(const StopOptions& options)
       delete savedException;
       throw re;
     }
+  }
+}
+
+//----------------------------------------------------------------------------
+void ctkPlugin::update(const QUrl& updateLocation)
+{
+  Q_D(ctkPlugin);
+  ctkPluginPrivate::Locker sync(&d->operationLock);
+  const bool wasActive = d->state == ACTIVE;
+
+  switch (d->getUpdatedState())
+  {
+  case ACTIVE:
+    stop(STOP_TRANSIENT);
+    // Fall through
+  case RESOLVED:
+  case INSTALLED:
+    // Load new plugin
+    //secure.callUpdate0(this, in, wasActive);
+    d->update0(updateLocation, wasActive);
+    break;
+  case STARTING:
+    // Wait for RUNNING state, this doesn't happen now
+    // since we are synchronized.
+    throw std::logic_error("Plugin is in STARTING state");
+  case STOPPING:
+    // Wait for RESOLVED state, this doesn't happen now
+    // since we are synchronized.
+    throw std::logic_error("Plugin is in STOPPING state");
+  case UNINSTALLED:
+    throw std::logic_error("Plugin is in UNINSTALLED state");
   }
 }
 

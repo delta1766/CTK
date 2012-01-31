@@ -59,30 +59,22 @@ ctkPluginArchive* ctkPluginStorage::insertPlugin(const QUrl& location, const QSt
 }
 
 //----------------------------------------------------------------------------
-ctkPluginArchive* ctkPluginStorage::updatePluginArchive(ctkPluginArchive* old, const QString& localPath)
+ctkPluginArchive* ctkPluginStorage::updatePluginArchive(ctkPluginArchive* old, const QUrl& updateLocation, const QString& localPath)
 {
-  Q_UNUSED(old)
-  Q_UNUSED(localPath)
-  //TODO: updatePluginArchive
-  //return new BundleArchiveImpl((BundleArchiveImpl)old, is);
-  return 0;
+  return new ctkPluginArchive(old, updateLocation, localPath);
 }
 
 //----------------------------------------------------------------------------
 void ctkPluginStorage::replacePluginArchive(ctkPluginArchive* oldPA, ctkPluginArchive* newPA)
 {
-  Q_UNUSED(oldPA)
-  Q_UNUSED(newPA)
-  //TODO: replacePluginArchive
-  //    int pos;
-  //    long id = oldBA.getBundleId();
-  //    synchronized (archives) {
-  //      pos = find(id);
-  //      if (pos >= archives.size() || archives.get(pos) != oldBA) {
-  //        throw new Exception("replaceBundleJar: Old bundle archive not found, pos=" + pos);
-  //      }
-  //      archives.set(pos, newBA);
-  //    }
+  int pos;
+  long id = oldPA->getPluginId();
+  pos = find(id);
+  if (pos >= archives.size() || archives[pos] != oldPA)
+  {
+    throw ctkRuntimeException(QString("replacePluginArchive: Old plugin archive not found, pos=").append(pos));
+  }
+  archives[pos] = newPA;
 }
 
 //----------------------------------------------------------------------------
@@ -185,4 +177,34 @@ QStringList ctkPluginStorage::findResourcesPath(long pluginId, const QString& pa
     qDebug() << QString("Getting plugin resource paths for %1 failed:").arg(path) << exc;
     return QStringList();
   }
+}
+
+//----------------------------------------------------------------------------
+int ctkPluginStorage::find(long id) const
+{
+  int lb = 0;
+  int ub = archives.size() - 1;
+  int x = 0;
+  while (lb < ub)
+  {
+    x = (lb + ub) / 2;
+    long xid = archives[x]->getPluginId();
+    if (id == xid)
+    {
+      return x;
+    }
+    else if (id < xid)
+    {
+      ub = x;
+    }
+    else
+    {
+      lb = x+1;
+    }
+  }
+  if (lb < archives.size() && archives[lb]->getPluginId() < id)
+  {
+    return lb + 1;
+  }
+  return lb;
 }
