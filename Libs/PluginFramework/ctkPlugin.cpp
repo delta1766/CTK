@@ -177,7 +177,7 @@ void ctkPlugin::update(const QUrl& updateLocation)
   ctkPluginPrivate::Locker sync(&d->operationLock);
   const bool wasActive = d->state == ACTIVE;
 
-  switch (d->getUpdatedState())
+  switch (d->getUpdatedState_unlocked())
   {
   case ACTIVE:
     stop(STOP_TRANSIENT);

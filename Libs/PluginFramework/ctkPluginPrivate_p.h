@@ -310,6 +310,8 @@ private:
    */
   void removePluginResources();
 
+  ctkPlugin::State getUpdatedState_unlocked();
+
 };
 
 

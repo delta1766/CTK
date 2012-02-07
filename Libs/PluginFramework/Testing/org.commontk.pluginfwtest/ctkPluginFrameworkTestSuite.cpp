@@ -27,6 +27,7 @@
 #include <ctkPluginException.h>
 #include <ctkServiceException.h>
 
+#include <QDir>
 #include <QTest>
 #include <QDebug>
 
@@ -459,216 +460,84 @@ void ctkPluginFrameworkTestSuite::frame045a()
 // The version is checked to see if an update has been made.
 void ctkPluginFrameworkTestSuite::frame070a()
 {
-  bool teststatus = true;
-  bool catchstatus = true;
-//  QString pluginA = "bundleA_test-1.0.0.jar";
-//  QString pluginA1 = "bundleA1_test-1.0.1.jar";
-//  InputStream fis;
-//  QString versionA;
-//  QString versionA1;
+  QString pluginA = "pluginA_test";
+  QString pluginA1 = "libpluginA1_test";
+  //InputStream fis;
+  QString versionA;
+  QString versionA1;
 
-//  pA.clear();
+  pA.clear();
 
-//  try
+  clearEvents();
+
+  try
+  {
+    pA = ctkPluginFrameworkTestUtil::installPlugin(pc, pluginA);
+  }
+  catch (const ctkPluginException& pexcA)
+  {
+    qDebug() << "framework test plugin" << pexcA << ":FRAME070A:FAIL";
+  }
+//  catch (const ctkSecurityException& secA)
 //  {
-//    pA = ctkPluginFrameworkTestUtil::installPlugin(pc, pluginA);
-//    teststatus = true;
-//  }
-//  catch (const ctkPluginException& pexcA)
-//  {
-//    qDebug() << "framework test plugin" << pexcA << ":FRAME070A:FAIL";
+//    qDebug() << "framework test plugin" << secA << ":FRAME070A:FAIL";
 //    teststatus = false;
 //  }
-////  catch (const ctkSecurityException& secA)
-////  {
-////    qDebug() << "framework test plugin" << secA << ":FRAME070A:FAIL";
-////    teststatus = false;
-////  }
 
-//  ctkDictionary ai = pA->getHeaders();
+  QHash<QString,QString> ai = pA->getHeaders();
+  versionA = ai["Plugin-Version"];
+  qDebug() << "Before version =" << versionA;
 
-////  if(false)
-////  {
-////    // debugging
-////    for (Enumeration e = ai.keys(); e.hasMoreElements();) {
-////      Object key = e.nextElement();
-////      Object value = ai.get(key);
-////      String s =  key.toString();
-////      String v =  value.toString();
-////      out.println("A: Manifest info: " + s + ", " + v);
-////    }
-////  }
+  QDir testPluginDir(pc->getProperty("pluginfw.testDir").toString());
+  QString pluginA1Path;
 
-//  versionA = ai["Plugin-Version"];
+  QStringList libSuffixes;
+  libSuffixes << ".so" << ".dll" << ".dylib";
+  foreach(QString libSuffix, libSuffixes)
+  {
+    QFileInfo info(testPluginDir, pluginA1 + libSuffix);
+    if (info.exists())
+    {
+      pluginA1Path = info.absoluteFilePath();
+      break;
+    }
+  }
 
-//  clearEvents();
-//  qDebug() << "Before version =" << versionA;
+  if (pluginA1Path.isEmpty())
+  {
+    qDebug() << "Plug-in" << pluginA1 << "not found in" << testPluginDir;
+    QFAIL("Test plug-in not found");
+  }
 
-//  try
-//  {
-//    URL urk = bc.getBundle().getResource(jarA1);
-//    out.println("update from " + urk);
-//    // URLConnection url1 = URLConnection (urk);
-//    fis = urk.openStream();
-//    if(fis == null)
-//    {
-//      fail("No data at " + urk + ":FRAME070A:FAIL");
-//    }
+  QUrl urk = QUrl::fromLocalFile(pluginA1Path);
+  qDebug() << "update from" << urk;
+
+  try
+  {
+    pA->update(urk);
+  }
+  catch (const ctkPluginException& pe)
+  {
+    QFAIL("framework test plug-in, update without new plug-in source :FRAME070A:FAIL");
+  }
+
+  QHash<QString,QString> a1i = pA->getHeaders();
+  versionA1 = a1i["Plugin-Version"];
+  qDebug() << "After version =" << versionA1;
+
+  QList<ctkPluginEvent> pEvts;
+  pEvts << ctkPluginEvent(ctkPluginEvent::INSTALLED, pA);
+  pEvts << ctkPluginEvent(ctkPluginEvent::RESOLVED, pA);
+  pEvts << ctkPluginEvent(ctkPluginEvent::UNRESOLVED, pA);
+  pEvts << ctkPluginEvent(ctkPluginEvent::UPDATED, pA);
 
 
-//    try
-//    {
-//      pA->update(fis);
-//    }
-//    catch (const ctkPluginException& pe)
-//    {
-//      teststatus = false;
-//      qDebug() << "framework test plug-in, update without new plug-in source :FRAME070A:FAIL";
-//    }
-//  }
-//  catch (MalformedURLException murk)
-//  {
-//    teststatus = false;
-//    qDebug() << "framework test plug-in, update file not found " << murk << ":FRAME070A:FAIL";
-//  }
-//  catch (FileNotFoundException fnf)
-//  {
-//    teststatus = false;
-//    qDebug() << "framework test plug-in, update file not found " << fnf << ":FRAME070A:FAIL";
-//  }
-//  catch (IOException ioe)
-//  {
-//    teststatus = false;
-//    qDebug() << "framework test plug-in, update file not found " << ioe << ":FRAME070A:FAIL";
-//  }
+  QVERIFY2(checkListenerEvents(QList<ctkPluginFrameworkEvent>(),
+                               pEvts, QList<ctkServiceEvent>()),
+           "Unexpected events");
 
-//  ctkDictionary a1i = pA->getHeaders();
-
-////  if(false)
-////  {
-////    // debugging
-////    for (Enumeration e = a1i.keys(); e.hasMoreElements();)
-////    {
-////      Object key = e.nextElement();
-////      Object value = a1i.get(key);
-////      String s =  key.toString();
-////      String v =  value.toString();
-////      out.println("A1: Manifest info: " + s + ", " + v);
-////    }
-////  }
-
-//  versionA1 = a1i["Plugin-Version"];
-
-//  qDebug() << "After version =" << versionA1;
-
-//  // check the events, none should have happened
-//  bool lStat = checkListenerEvents(out, false, 0, true, ctkPluginEvent::UPDATED,
-//                            false, 0, pA, null);
-
-//  if (versionA1 == versionA)
-//  {
-//    teststatus = false;
-//    qDebug() << "framework test plug-in, update of plug-in failed, version info unchanged :FRAME070A:Fail";
-//  }
-
-//  if (teststatus == true )
-//  {
-//    qDebug() << "### framework test plug-in :FRAME070A:PASS";
-//  }
-//  else
-//  {
-//    qDebug() << "### framework test plug-in :FRAME070A:FAIL";
-//  }
+  QVERIFY2(versionA1 != versionA, "framework test plug-in, update of plug-in failed, version info unchanged :FRAME070A:Fail");
 }
-
-//----------------------------------------------------------------------------
-// 15. Uninstall bundleB_test and then try to start and stop it
-// In both cases exceptions should be thrown.
-//void ctkPluginFrameworkTestSuite::frame075a()
-//{
-//  out.println("### framework test bundle :FRAME075A start");
-//  bool teststatus = true;
-//  bool exep1 = false;
-//  bool exep2 = false;
-
-//  try
-//  {
-//    buB.uninstall();
-//  }
-//  catch (BundleException be)
-//  {
-//    teststatus = false;
-//    fail("framework test bundle, uninstall of bundleB failed:" + be +" :FRAME075A:FAIL");
-//  }
-//  catch (Exception e)
-//  {
-//    fail("framework test bundle, got unexpected exception " + e + " :FRAME075A:FAIL");
-//    e.printStackTrace();
-//  }
-
-//  try
-//  {
-//    buB.start();
-//  }
-//  catch (BundleException be)
-//  {
-//    teststatus =  false;
-//    fail("framework test bundle, got unexpected exception " + be + "at start :FRAME075A:FAIL");
-//  }
-//  catch (IllegalStateException ise)
-//  {
-//    exep1 = true;
-//    // out.println("Got expected exception" + ise);
-//  }
-//  catch (SecurityException sec)
-//  {
-//    teststatus = false;
-//    fail("framework test bundle, got unexpected exception " + sec + " :FRAME075A:FAIL");
-//  }
-
-//  catch (Exception e)
-//  {
-//    fail("framework test bundle, got unexpected exception " + e + " :FRAME075A:FAIL");
-//    e.printStackTrace();
-//  }
-
-//  try
-//  {
-//    buB.stop();
-//  }
-//  catch (BundleException be)
-//  {
-//    teststatus =  false;
-//    fail("framework test bundle, got unexpected exception " + be + "at stop :FRAME075A:FAIL");
-//  }
-//  catch (IllegalStateException ise)
-//  {
-//    exep2 = true;
-//    // out.println("Got expected exception" + ise);
-//  }
-//  catch (SecurityException sec)
-//  {
-//    teststatus = false;
-//    fail("framework test bundle, got unexpected exception " + sec + " :FRAME075A:FAIL");
-//  }
-//  catch (Exception e)
-//  {
-//    fail("framework test bundle, got unexpected exception " + e + " :FRAME075A:FAIL");
-//    e.printStackTrace();
-//  }
-
-//  // System.err.println("teststatus=" + teststatus + " exep1= " + exep1 + " exep2= " + exep2);
-//  teststatus = teststatus && exep1 && exep2;
-
-//  if (teststatus == true )
-//  {
-//    out.println("### framework test bundle :FRAME075A:PASS");
-//  }
-//  else
-//  {
-//    fail("### framework test bundle :FRAME075A:FAIL");
-//  }
-//}
 
 //----------------------------------------------------------------------------
 void ctkPluginFrameworkTestSuite::frameworkListener(const ctkPluginFrameworkEvent& fwEvent)
@@ -932,6 +801,15 @@ bool ctkPluginFrameworkTestSuite::checkSyncListenerEvents(
 
   syncPluginEvents.clear();
   return listenState;
+}
+
+void ctkPluginFrameworkTestSuite::clearEvents()
+{
+  QTest::qWait(300);
+  pluginEvents.clear();
+  syncPluginEvents.clear();
+  frameworkEvents.clear();
+  serviceEvents.clear();
 }
 
 //----------------------------------------------------------------------------

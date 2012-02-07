@@ -49,13 +49,6 @@ protected Q_SLOTS:
   void syncPluginListener(const ctkPluginEvent& event);
   void serviceListener(const ctkServiceEvent& event);
 
-private Q_SLOTS:
-
-  void initTestCase();
-  void cleanupTestCase();
-
-  // test functions
-  void frame005a();
   void frame007a();
   void frame010a();
   void frame018a();
@@ -67,6 +60,14 @@ private Q_SLOTS:
   void frame042a();
   void frame045a();
   void frame070a();
+private Q_SLOTS:
+
+  void initTestCase();
+  void cleanupTestCase();
+
+  // test functions
+  void frame005a();
+
 
 private:
 
@@ -99,6 +100,8 @@ private:
   // Check that the expected events have reached the listeners and
   // reset the events
   bool checkSyncListenerEvents(const QList<ctkPluginEvent>& pEvts);
+
+  void clearEvents();
 
   static int nRunCount;
 

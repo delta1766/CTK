@@ -177,10 +177,19 @@ ctkPlugin::State ctkPluginPrivate::getUpdatedState()
 {
   if (state & ctkPlugin::INSTALLED)
   {
+    Locker sync(&operationLock);
+    getUpdatedState_unlocked();
+  }
+  return state;
+}
+
+//----------------------------------------------------------------------------
+ctkPlugin::State ctkPluginPrivate::getUpdatedState_unlocked()
+{
+  if (state & ctkPlugin::INSTALLED)
+  {
     try
     {
-      // NYI, fix double locking
-      Locker sync(&operationLock);
       if (state == ctkPlugin::INSTALLED)
       {
         operation.fetchAndStoreOrdered(RESOLVING);
@@ -334,7 +343,7 @@ void ctkPluginPrivate::finalizeActivation()
   Locker sync(&operationLock);
 
   // 4: Resolve plugin (if needed)
-  switch (getUpdatedState())
+  switch (getUpdatedState_unlocked())
   {
   case ctkPlugin::INSTALLED:
     Q_ASSERT_X(resolveFailException != 0, Q_FUNC_INFO, "no resolveFailException");

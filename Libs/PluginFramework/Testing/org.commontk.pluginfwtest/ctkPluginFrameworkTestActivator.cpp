@@ -41,15 +41,15 @@ void ctkPluginFrameworkTestActivator::start(ctkPluginContext* context)
   props.insert(ctkPluginConstants::SERVICE_PID, frameworkTestSuite->metaObject()->className());
   context->registerService<ctkTestSuiteInterface>(frameworkTestSuite, props);
 
-  serviceListenerTestSuite = new ctkServiceListenerTestSuite(context);
-  props.clear();
-  props.insert(ctkPluginConstants::SERVICE_PID, serviceListenerTestSuite->metaObject()->className());
-  context->registerService<ctkTestSuiteInterface>(serviceListenerTestSuite, props);
+//  serviceListenerTestSuite = new ctkServiceListenerTestSuite(context);
+//  props.clear();
+//  props.insert(ctkPluginConstants::SERVICE_PID, serviceListenerTestSuite->metaObject()->className());
+//  context->registerService<ctkTestSuiteInterface>(serviceListenerTestSuite, props);
 
-  serviceTrackerTestSuite = new ctkServiceTrackerTestSuite(context);
-  props.clear();
-  props.insert(ctkPluginConstants::SERVICE_PID, serviceTrackerTestSuite->metaObject()->className());
-  context->registerService<ctkTestSuiteInterface>(serviceTrackerTestSuite, props);
+//  serviceTrackerTestSuite = new ctkServiceTrackerTestSuite(context);
+//  props.clear();
+//  props.insert(ctkPluginConstants::SERVICE_PID, serviceTrackerTestSuite->metaObject()->className());
+//  context->registerService<ctkTestSuiteInterface>(serviceTrackerTestSuite, props);
 }
 
 //----------------------------------------------------------------------------
@@ -58,8 +58,8 @@ void ctkPluginFrameworkTestActivator::stop(ctkPluginContext* context)
   Q_UNUSED(context);
 
   delete frameworkTestSuite;
-  delete serviceListenerTestSuite;
-  delete serviceTrackerTestSuite;
+  //delete serviceListenerTestSuite;
+  //delete serviceTrackerTestSuite;
 }
 
 Q_EXPORT_PLUGIN2(org_commontk_pluginfwtest, ctkPluginFrameworkTestActivator)
