@@ -156,6 +156,10 @@
         <xsd:element name="file" type="fileType"/>
         <xsd:element name="image" type="imageType"/>
         <xsd:element name="geometry" type="geometryType"/>
+
+        <xsd:element name="datetime" type="datetimeType"/>
+
+        <xsd:element name="series" type="seriesType"/>
         
         <!--
         <xsd:element name="transform" type="transformType"/>
@@ -309,6 +313,68 @@
 
   <!--
   ===================================================================
+    SERIES PARAMETER 
+      Extends paramType for parameters which can appear multiple times on the command line.
+  ===================================================================
+  -->
+  <xsd:complexType name="seriesType">
+    <xsd:annotation>
+      <xsd:documentation></xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="multipleType">
+
+        <xsd:sequence>     
+          
+          <!-- At least one parameter definition is required in the group -->
+          <xsd:choice maxOccurs="unbounded">
+          
+            <xsd:element name="boolean" type="paramType"/>
+            
+            <xsd:element name="integer" type="scalarType"/>
+            <xsd:element name="float" type="scalarType"/>
+            <xsd:element name="double" type="scalarType"/>
+            
+            <xsd:element name="string" type="multipleType"/>
+            <xsd:element name="directory" type="multipleType"/>
+
+            <xsd:element name="integer-vector" type="scalarVectorType"/>
+            <xsd:element name="float-vector" type="scalarVectorType"/>
+            <xsd:element name="double-vector" type="scalarVectorType"/>
+            
+            <xsd:element name="string-vector" type="paramType"/>
+            
+            <xsd:element name="integer-enumeration" type="enumerationType"/>
+            <xsd:element name="float-enumeration" type="enumerationType"/>
+            <xsd:element name="double-enumeration" type="enumerationType"/>
+            <xsd:element name="string-enumeration" type="enumerationType"/>
+
+            <xsd:element name="datetime" type="datetimeType"/>
+            
+            <xsd:element name="point" type="pointType"/>
+            <xsd:element name="region" type="pointType"/>
+            
+            <xsd:element name="file" type="fileType"/>
+            <xsd:element name="image" type="imageType"/>
+            <xsd:element name="geometry" type="geometryType"/>
+
+            
+          </xsd:choice>
+          
+        </xsd:sequence>
+
+
+        <xsd:attribute default="" name="key" type="xsd:string">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!--
+  ===================================================================
     SCALAR PARAMETER 
       Extends multipleType for scalar parameters with constraints (integer, float, double).
   ===================================================================
@@ -326,7 +392,28 @@
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
-  
+
+<!--
+  ===================================================================
+    DATETIME PARAMETER 
+      Extends multipleType for date and time parameters with constraints.
+  ===================================================================
+  -->
+  <xsd:complexType name="datetimeType">
+    <xsd:annotation>
+      <xsd:documentation>This type represents dates and times and can contain
+      constraints on the domain of valid values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="multipleType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="date-constraints" type="dateConstraintsType"/>
+          <xsd:element minOccurs="0" name="time-constraints" type="timeConstraintsType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
   <!--
   ===================================================================
     ENUMERATION PARAMETER 
@@ -547,6 +634,47 @@
       <xsd:element name="step" type="xsd:double">
         <xsd:annotation>
           <xsd:documentation>The increment for the parameter.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:all>
+  </xsd:complexType>
+
+  <!-- constraints for datetimeType -->
+  <xsd:complexType name="dateConstraintsType">
+    <xsd:annotation>
+      <xsd:documentation>Constraints on the allowed dates for datetime types</xsd:documentation>
+    </xsd:annotation>
+    <xsd:all>
+      <xsd:element minOccurs="0" name="minimum" type="xsd:double">
+        <xsd:annotation>
+          <xsd:documentation>The minimum allowed value for the parameter. If not specified, the minimum is the smallest
+          possible value for the parameter type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="maximum" type="xsd:double">
+        <xsd:annotation>
+          <xsd:documentation>The maximum allowed value for the parameter. If not specified, the maximum is the largest
+          possible value for the parameter type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:all>
+  </xsd:complexType>
+
+  <xsd:complexType name="timeConstraintsType">
+    <xsd:annotation>
+      <xsd:documentation>Constraints on the allowed dates for datetime types</xsd:documentation>
+    </xsd:annotation>
+    <xsd:all>
+      <xsd:element minOccurs="0" name="minimum" type="xsd:double">
+        <xsd:annotation>
+          <xsd:documentation>The minimum allowed value for the parameter. If not specified, the minimum is the smallest
+          possible value for the parameter type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="maximum" type="xsd:double">
+        <xsd:annotation>
+          <xsd:documentation>The maximum allowed value for the parameter. If not specified, the maximum is the largest
+          possible value for the parameter type.</xsd:documentation>
         </xsd:annotation>
       </xsd:element>
     </xsd:all>

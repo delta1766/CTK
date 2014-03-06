@@ -31,6 +31,8 @@
   
   <xsl:param name="executableWidget">QWidget</xsl:param>
   <xsl:param name="parametersWidget">ctkCollapsibleGroupBox</xsl:param>
+  <xsl:param name="seriesWidget">QGroupBox</xsl:param>
+  <xsl:param name="datetimeWidget">QDateTimeEdit</xsl:param>
   <xsl:param name="booleanWidget">QCheckBox</xsl:param>
   <xsl:param name="integerWidget">QSpinBox</xsl:param>
   <xsl:param name="floatingWidget">QDoubleSpinBox</xsl:param>
@@ -43,7 +45,8 @@
   <xsl:param name="directoryWidget">ctkPathLineEdit</xsl:param>
   <xsl:param name="pointWidget">ctkCoordinatesWidget</xsl:param>
   <xsl:param name="unsupportedWidget">QLabel</xsl:param>
-    
+
+  <xsl:param name="datetimeValueProperty">dateTime</xsl:param>
   <xsl:param name="booleanValueProperty">checked</xsl:param>
   <xsl:param name="integerValueProperty">value</xsl:param>
   <xsl:param name="floatValueProperty">value</xsl:param>
@@ -81,7 +84,7 @@
       <xsl:when test="$cliType='boolean'">bool</xsl:when>
       <xsl:when test="$cliType='integer'">number</xsl:when>
       <xsl:when test="$cliType='float'">double</xsl:when>
-      <xsl:when test="$cliType=('point', 'region', 'image', 'file', 'directory', 'geometry', 'integer-vector', 'double-vector', 'float-vector', 'string-vector', 'integer-enumeration', 'double-enumeration', 'float-enumeration', 'string-enumeration')">string</xsl:when>
+      <xsl:when test="$cliType=('series', 'point', 'region', 'image', 'file', 'directory', 'geometry', 'integer-vector', 'double-vector', 'float-vector', 'string-vector', 'integer-enumeration', 'double-enumeration', 'float-enumeration', 'string-enumeration')">string</xsl:when>
       <xsl:otherwise><xsl:value-of select="$cliType"/></xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -115,6 +118,7 @@
       <xsl:when test="$cliType='double-enumeration'"><xsl:value-of select="$enumerationValueProperty"/></xsl:when>
       <xsl:when test="$cliType='float-enumeration'"><xsl:value-of select="$enumerationValueProperty"/></xsl:when>
       <xsl:when test="$cliType='string-enumeration'"><xsl:value-of select="$enumerationValueProperty"/></xsl:when>
+      <xsl:when test="$cliType='datetime'"><xsl:value-of select="$datetimeValueProperty"/></xsl:when>
       <xsl:otherwise>value</xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -141,6 +145,11 @@
   -->
 
   <xsl:template match="parameters/label">
+    <property name="title">
+      <string><xsl:value-of select="text()"/></string>
+    </property>
+  </xsl:template>
+  <xsl:template match="series/label">
     <property name="title">
       <string><xsl:value-of select="text()"/></string>
     </property>
@@ -321,11 +330,73 @@
 
   <!--
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Series (default: QGroupBox)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+  <xsl:template match="series">
+    <xsl:variable name="seriesLabel"><xsl:value-of select="label"/></xsl:variable>
+    <item row="{position()-1}" column="0" colspan="2">
+      <widget class="{$seriesWidget}" name="seriesGroup:{$seriesLabel}">
+        <xsl:apply-templates select="./label"/>
+        <xsl:apply-templates select="./description"/>
+        <layout class="QHBoxLayout" name="seriesLayout:{$seriesLabel}_1">
+         <item>
+          <widget class="QListWidget" name="{$seriesLabel}_ListWidget"/>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="seriesLayout:{$seriesLabel}_2">
+           <item>
+            <widget class="QWidget" name="{$seriesLabel}_paramContainer" native="true">
+            <layout class="QGridLayout">
+              <xsl:apply-templates select="./label/following-sibling::*"/>
+            </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="{$seriesLabel}_spacer_1">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="seriesLayout:{$seriesLabel}_3">
+             <item>
+              <widget class="QPushButton" name="{$seriesLabel}_PreviousButton">
+               <property name="text">
+                <string>Previous</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="{$seriesLabel}_NextButton">
+               <property name="text">
+                <string>Next</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+      </widget>
+    </item>
+  </xsl:template>
+
+  <!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     BOOLEAN parameter (default: QCheckbox)
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/boolean">
+  <xsl:template match="boolean">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <widget class="{$booleanWidget}"  name="parameter:{name}">
@@ -343,7 +414,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/integer">
+  <xsl:template match="integer">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <widget class="{$integerWidget}"  name="parameter:{name}">
@@ -366,7 +437,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/*[name()=('double','float')]">
+  <xsl:template match="*[name()=('double','float')]">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <widget class="{$floatingWidget}"  name="parameter:{name}">
@@ -392,7 +463,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/*[name()=('string', 'integer-vector', 'float-vector', 'double-vector', 'string-vector')]">
+  <xsl:template match="*[name()=('string', 'integer-vector', 'float-vector', 'double-vector', 'string-vector')]">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <widget class="{$vectorWidget}"  name="parameter:{name}">
@@ -407,7 +478,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/*[name()=('integer-enumeration', 'float-enumeration', 'double-enumeration', 'string-enumeration')]">
+  <xsl:template match="*[name()=('integer-enumeration', 'float-enumeration', 'double-enumeration', 'string-enumeration')]">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <widget class="{$enumWidget}"  name="parameter:{name}">
@@ -422,14 +493,32 @@
       </widget>
     </item>
   </xsl:template>
-  
+
+  <!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    DATETIME parameter (default: QDateTimeEdit)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <xsl:template match="datetime">
+    <xsl:call-template name="gridItemWithLabel"/>
+    <item  row="{position()-1}" column="1">
+      <widget class="{$datetimeWidget}"  name="parameter:{name}">
+        <xsl:call-template name="commonWidgetProperties"/>
+        <property name="calendarPopup">
+          <bool>true</bool>
+        </property>
+      </widget>
+    </item>
+  </xsl:template>
+
   <!--
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMAGE parameter (default: ctkPathLineEdit)
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/*[name()=('image')]">
+  <xsl:template match="*[name()=('image')]">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <xsl:choose>
@@ -465,7 +554,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/*[name()=('file', 'geometry')]">
+  <xsl:template match="*[name()=('file', 'geometry')]">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <xsl:choose>
@@ -501,7 +590,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/directory">
+  <xsl:template match="directory">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <widget class="{$directoryWidget}"  name="parameter:{name}">
@@ -519,7 +608,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/*[name()=('point', 'region')]">
+  <xsl:template match="*[name()=('point', 'region')]">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <widget class="{$pointWidget}"  name="parameter:{name}">

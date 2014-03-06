@@ -68,6 +68,32 @@
         <step>0</step>
       </constraints>
     </double>
+
+    <series multiple="true">
+      <name>heartParams</name>
+      <longflag>heart_params</longflag>
+      <description>Heart parameter series</description>
+      <label>Heart Parameter</label>
+
+      <datetime>
+        <name>heartParamTimestamp</name>
+        <longflag>heart_param_timestamp</longflag>
+        <description>Timestamp</description>
+        <label>Date</label>
+      </datetime>
+      <string>
+        <name>heartParamId</name>
+        <longflag>heart_param_id</longflag>
+        <description>Some id</description>
+        <label>Id</label>
+      </string>
+      <boolean>
+        <name>heartParamB</name>
+        <longflag>heart_param_bool</longflag>
+        <description>bool value</description>
+        <label>Bool</label>
+      </boolean>
+    </series>
   </parameters>
 
   <parameters advanced="true">
